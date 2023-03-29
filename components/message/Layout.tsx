@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from 'next/image'
 import Head from "next/head"
 
 type Props = {
@@ -8,7 +6,7 @@ type Props = {
 	content?: string
 }
 
-export default function Message( {children, title, content}: Props) {
+export default function Message({children, title, content}: Props) {
   return (
 		<>
 			<Head>
@@ -28,9 +26,9 @@ export default function Message( {children, title, content}: Props) {
 					</div>
 				</main>
 				<footer>
-					©2023 { title }
+					©2023 Next + Rails Base
 				</footer>
 			</div>
 		</>
-  )
+	)
 }

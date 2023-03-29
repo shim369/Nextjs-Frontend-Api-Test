@@ -1,13 +1,28 @@
-
-
-import { Key } from "react"
+import { Message } from "./MessageTypes"
 import MessageItem from "./MessageItem"
 
-export default function TodoList({ todos }: any) {
+type MessageListProps = {
+    messages: Message[];
+    setMessages: (messages: Message[]) => void;
+};
+
+export default function MessageList({ messages, setMessages }: MessageListProps) {
+    const handleDelete = (messageId: number) => {
+        setMessages(messages.filter((message) => message.id !== messageId));
+    };
+
+    const handleUpdate = (updatedMessage: Message) => {
+        setMessages(messages.map((message) => message.id === updatedMessage.id ? updatedMessage : message));
+    };
     return (
-        <div className="grid">
-            {todos.map((todo: { id: Key | null | undefined }) => (
-                <MessageItem key={todo.id} todo={todo} />
+        <div>
+            {messages.map((message) => (
+                <MessageItem
+                    key={message.id}
+                    message={message}
+                    onDelete={handleDelete}
+                    onUpdate={handleUpdate}
+                />
             ))}
         </div>
     )

@@ -1,71 +1,94 @@
-import { Button } from 'react-bootstrap'
-import * as Icon from 'react-bootstrap-icons'
-import axios from 'axios'
-import { useRouter } from 'next/router'
-import swal from 'sweetalert'
-import Moment from 'react-moment'
+import { useState } from "react";
+import { Message } from "./MessageTypes"
 
-const SERVERURL = "http://localhost:3001/";
+type MessageItemProps = {
+  message: Message;
+  onDelete: (messageId: number) => void;
+  onUpdate: (updatedMessage: Message) => void;
+};
+  
+export default function MessageItem({ message, onDelete, onUpdate }: MessageItemProps) {
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(message.title);
+  const [content, setContent] = useState(message.content);
 
-export default function MessageItem({ message }: any) {
-
-    const router = useRouter()
-
-    const deleteMessage = async (id: any) => {
-        axios.delete(`${SERVERURL}api/v1/message/${id}`)
-          .then(function (response) {
-            swal({
-              title: "Message Deleted!",
-              text: "Message task deleted successfully",
-              icon: "danger",
-            });
-          })
-        .catch(function (error) {
-            console.log(error);
-        });
-        router.push("/")
+  async function updateMessage(updatedMessage: Partial<Message>) {
+    const response = await fetch(`http://localhost:3001/api/v1/messages/${updatedMessage.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedMessage),
+    });
+  
+    if (!response.ok) {
+      throw new Error("Failed to update message");
     }
-
-    const updateMessage = async (id: any) => {
-        axios.put(`${SERVERURL}api/v1/message/${id}`, {
-            title: message.title,
-            description: message.description,
-            completed: !message.completed,
-            time: message.time
-          })
-          .then(function (response) {
-            swal({
-              title: "Message Updated!",
-              text: "Message task Updated successfully",
-              icon: "success",
-            });
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-          router.push("/")
+  
+    const data = await response.json();
+    return data;
+  }
+  
+  async function deleteMessage(messageId: number) {
+    const response = await fetch(`http://localhost:3001/api/v1/messages/${messageId}`, {
+      method: "DELETE",
+    });
+  
+    if (!response.ok) {
+      throw new Error("Failed to delete message");
     }
+  
+    const data = await response.json();
+    return data;
+  }
 
+  const handleEdit = async () => {
+    try {
+      const updatedMessageData = { ...message, title, content };
+      const data = await updateMessage(updatedMessageData);
+      const updatedMessage = data.data;
+      setEditing(false);
+      setTitle(updatedMessage.title);
+      setContent(updatedMessage.content);
+      onUpdate(updatedMessage);
+    } catch (error) {
+      console.error("Failed to update message:", error);
+    }
+  };
 
+  const handleDelete = async () => {
+    try {
+      await deleteMessage(message.id);
+      onDelete(message.id);
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+    }
+  };
+
+  if (editing) {
     return (
-        <div className="card mt-4">
-            {message.completed? <h2><del>{ message.title }</del></h2> : <h2>{ message.title }</h2>}
-            <p>{ message.description }</p>
-			<div className="mt-3 datetime">
-				<Icon.Clock />
-				<Moment format="YYYY/MM/DD">
-					{ message.time }
-				</Moment>
-			</div>
-			<div className="mt-3 buttons">
-            {message.completed? 
-                <Button variant="success" onClick={() => (updateMessage(message.id))}>Completed</Button>
-                :
-                <Button variant="primary" onClick={() => (updateMessage(message.id))}>Complete</Button>
-            }
-            <Button variant="danger" onClick={() => (deleteMessage(message.id))}>Delete</Button>
-			</div>
-        </div>
-    )
+      <div>
+        <input
+          type="text"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
+        <textarea
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+        ></textarea>
+        <button onClick={handleEdit}>Save</button>
+        <button onClick={() => setEditing(false)}>Cancel</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h2>{message.title}</h2>
+      <p>{message.content}</p>
+      <button onClick={() => setEditing(true)}>Edit</button>
+      <button onClick={handleDelete}>Delete</button>
+    </div>
+  );
 }

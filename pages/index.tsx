@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
+import { Message } from "../components/message/MessageTypes"
+import Layout from "../components/message/Layout"
+import MessageForm from "../components/message/MessageForm"
+import MessageList from "../components/message/MessageList"
 
-interface Message {
-  id: number;
-  title: string;
-  content: string;
-}
 
-const Index = () => {
+export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
@@ -16,21 +15,17 @@ const Index = () => {
       setMessages(data.data);
     };
     fetchPosts();
-  }, []);
+  }, [])
+
+  const handleNewMessage = (newMessage: Message) => {
+    setMessages((prevMessages) => [newMessage, ...prevMessages]);
+  };
 
   return (
-    <div>
+    <Layout>
+      <MessageForm onMessageCreated={handleNewMessage} />
       <h1>Messages</h1>
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>
-            <h2>{message.title}</h2>
-            <p>{message.content}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-export default Index;
+      <MessageList messages={messages} setMessages={setMessages} />
+    </Layout>
+  )
+}
