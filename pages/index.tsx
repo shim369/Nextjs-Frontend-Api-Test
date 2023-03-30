@@ -24,7 +24,6 @@ export default function Home() {
   return (
     <Layout>
       <MessageForm onMessageCreated={handleNewMessage} />
-      <h1>Messages</h1>
       <MessageList messages={messages} setMessages={setMessages} />
     </Layout>
   )

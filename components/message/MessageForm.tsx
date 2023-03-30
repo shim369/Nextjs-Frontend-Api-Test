@@ -42,25 +42,29 @@ export default function MessageForm({ onMessageCreated }: MessageFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="title">Title:</label>
+    <form onSubmit={handleSubmit} className="bg-message-image bg-center h-[auto] w-[100%] p-7 my-5 mx-0">
+      <div className="mb-5">
         <input
-          id="title"
+          className="bg-white focus:bg-white focus:border-blue-300 border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring"
           type="text"
+          placeholder="Title"
+          id="title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
       </div>
-      <div>
-        <label htmlFor="content">Content:</label>
+      <div className="mb-5">
         <textarea
+          className="bg-white focus:bg-white focus:border-blue-300 border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring"
+          placeholder="Content"
           id="content"
           value={content}
           onChange={(event) => setContent(event.target.value)}
         ></textarea>
       </div>
-      <button type="submit">Submit</button>
+      <div className="flex justify-center">
+        <button type="submit" className="bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 focus:outline-none text-white font-semibold py-2 px-4 rounded">Submit</button>
+      </div>
     </form>
   )
 }

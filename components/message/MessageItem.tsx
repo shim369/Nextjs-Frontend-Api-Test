@@ -67,28 +67,34 @@ export default function MessageItem({ message, onDelete, onUpdate }: MessageItem
 
   if (editing) {
     return (
-      <div>
+      <div className="bg-white p-7 mb-5">
         <input
+          className="mb-3 bg-white focus:bg-white focus:border-blue-300 border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring"
           type="text"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
         <textarea
+          className="mb-3 bg-white focus:bg-white focus:border-blue-300 border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring"
           value={content}
           onChange={(event) => setContent(event.target.value)}
         ></textarea>
-        <button onClick={handleEdit}>Save</button>
-        <button onClick={() => setEditing(false)}>Cancel</button>
+        <div className="flex items-center justify-center">
+          <button onClick={handleEdit} className="mr-3 bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none text-white font-semibold py-2 px-4 rounded">Save</button>
+          <button onClick={() => setEditing(false)} className="bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 focus:outline-none text-white font-semibold py-2 px-4 rounded">Cancel</button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>{message.title}</h2>
-      <p>{message.content}</p>
-      <button onClick={() => setEditing(true)}>Edit</button>
-      <button onClick={handleDelete}>Delete</button>
+    <div className="bg-white p-7 mb-5">
+      <h2 className="mb-3">{message.title}</h2>
+      <p className="mb-3">{message.content}</p>
+      <div className="flex items-center justify-center">
+        <button onClick={() => setEditing(true)} className="mr-3 bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none text-white font-semibold py-2 px-4 rounded">Edit</button>
+        <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 focus:outline-none text-white font-semibold py-2 px-4 rounded">Delete</button>
+      </div>
     </div>
   );
 }
