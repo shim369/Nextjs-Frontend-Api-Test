@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Message } from "./MessageTypes"
 import { createMessage as createMessageAPI } from "../../utils/messageAPI"
+import DOMPurify from "dompurify"
 
 type MessageFormProps = {
   onMessageCreated: (newMessage: Message) => void;
@@ -62,7 +63,9 @@ export default function MessageForm({ onMessageCreated }: MessageFormProps) {
   
     if (!titleValidationError && !contentValidationError) {
       try {
-        const newMessage = { title, content };
+        const sanitizedTitle = DOMPurify.sanitize(title);
+        const sanitizedContent = DOMPurify.sanitize(content);
+        const newMessage = { title: sanitizedTitle, content: sanitizedContent };
         const createdMessage = await createMessageAPI(newMessage);
         onMessageCreated(createdMessage);
         setTitle("");
