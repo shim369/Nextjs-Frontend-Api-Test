@@ -43,7 +43,7 @@ export default function MessageForm({ onMessageCreated }: MessageFormProps) {
 
   const validateContent = (content: string): string => {
     if (!content) {
-      return "Please enter a title.";
+      return "Please enter content.";
     }
     if (content.length > 200) {
       return "Please enter content within 200 characters.";
